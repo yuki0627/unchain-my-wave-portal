@@ -8,5 +8,7 @@ typechain-types
 #Hardhat files
 cache
 artifacts
+hardhat.config.js
 
+.nvmrc
 .DS_Store
