@@ -5,12 +5,13 @@ contract WavePortal {
     uint256 totalWaves;
     uint256 private seed;
 
-    event NewWave(address indexed from, uint256 timestamp, string message);
+    event NewWave(address indexed from, uint256 timestamp, string message, bool result);
 
     struct Wave {
         address waver;
         string message;
         uint256 timestamp;
+        bool result;
     }
 
     Wave[] waves;
@@ -25,21 +26,21 @@ contract WavePortal {
         /*
          * 初期シードの設定
          */
-        console.log("seed", seed);
-        console.log("timestamp", block.timestamp);
-        console.log("difficulty", block.difficulty);
+        // console.log("seed", seed);
+        // console.log("timestamp", block.timestamp);
+        // console.log("difficulty", block.difficulty);
         seed = (block.timestamp + block.difficulty) % 100;
-        console.log("seed", seed);
+        // console.log("seed", seed);
     }
 
     function wave(string memory _message) public {
         /*
          * 現在ユーザーがwaveを送信している時刻と、前回waveを送信した時刻が15分以上離れていることを確認。
          */
-        require(
-            lastWavedAt[msg.sender] + 15 minutes < block.timestamp,
-            "Wait 15m"
-        );
+        // require(
+        //     lastWavedAt[msg.sender] + 15 minutes < block.timestamp,
+        //     "Wait 15m"
+        // );
 
         /*
          * ユーザーの現在のタイムスタンプを更新する
@@ -49,15 +50,14 @@ contract WavePortal {
         totalWaves += 1;
         console.log("%s has waved!", msg.sender);
 
-        waves.push(Wave(msg.sender, _message, block.timestamp));
-
         /*
          *  ユーザーのために乱数を設定
          */
         seed = (block.difficulty + block.timestamp + seed) % 100;
 
+        bool result;
         if (seed <= 50) {
-            console.log("%s won!", msg.sender);
+            
 
             uint256 prizeAmount = 0.0001 ether;
             require(
@@ -66,9 +66,14 @@ contract WavePortal {
             );
             (bool success, ) = (msg.sender).call{value: prizeAmount}("");
             require(success, "Failed to withdraw money from contract.");
+            result = success;
+        } else {
+            console.log("%s lose!", msg.sender);
+            result = false;
         }
 
-        emit NewWave(msg.sender, block.timestamp, _message);
+        waves.push(Wave(msg.sender, _message, block.timestamp, result));
+        emit NewWave(msg.sender, block.timestamp, _message, result);
     }
 
     function getAllWaves() public view returns (Wave[] memory) {

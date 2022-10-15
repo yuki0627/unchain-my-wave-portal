@@ -8,7 +8,7 @@ const main = async () => {
     value: hre.ethers.utils.parseEther("0.1"),
   });
   await waveContract.deployed();
-  console.log("Contract deployed to: ", waveContract.address);
+  console.log("■TEST Contract deployed to: ", waveContract.address);
 
   /*
    * コントラクトの残高を取得（0.1ETH）であることを確認
@@ -17,7 +17,7 @@ const main = async () => {
     waveContract.address
   );
   console.log(
-    "Contract balance:",
+    "■TEST Contract balance:",
     hre.ethers.utils.formatEther(contractBalance)
   );
 
@@ -38,12 +38,12 @@ const main = async () => {
    *コントラクトの残高から0.0001ETH引かれていることを確認
    */
   console.log(
-    "Contract balance:",
+    "■TEST Contract balance:",
     hre.ethers.utils.formatEther(contractBalance)
   );
 
   let allWaves = await waveContract.getAllWaves();
-  console.log(allWaves);
+  console.log("■TEST allWaves", allWaves);
 };
 
 const runMain = async () => {
